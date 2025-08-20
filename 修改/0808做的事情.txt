@@ -1,0 +1,70 @@
+後端:
+core/model
+Notification.java
+
+core/dao
+NotificationRepository.java
+UserRoleRepository.java(恬一的) (8/11再修改)
+
+core/controller
+NotificationController.java(8/11再修改)
+
+core/service
+InventoryAlertService.java(8/11再修改)
+
+depot/dao
+MaterialRepository.java
+
+core/schedule (new)
+LowStockScheduler.java 
+
+主程式進入點增加
+
+前端:
+index.ts
+stores/Notification.ts(new)
+components/UserNotification.vue (new)
+view/Notification.vue (new)
+App.vue
+
+------------------------------------------------------------------------------------
+project/core/model
+建立Notification.java (Entity)
+
+project/core/controller
+建立NotificationController
+
+project/core/dao
+建立NotificationRepository.java (Repository)
+
+project/core/dao
+在UserRoleRepository 底下新增一個新的方法
+    @Query("SELECT ur.employeeId FROM UserRole ur JOIN Role r ON ur.roleId = r.roleId WHERE r.roleName =:roleName")
+    List<Integer> findEmployeeIdsByRoleName(String roleName);
+
+project/core/service
+建立InventoryAlertService.java
+
+depot/dao
+增加 @Query("SELECT m FROM Material m WHERE m.stockCurrent < m.safetyStock")
+    List<Material> findByStockCurrentLessThanSafeStock();
+
+在主程式進入點增加
+@EnableScheduling // 啟用 Spring 排程功能
+
+在core底下增加schedule資料夾
+並建立LowStockScheduler.java 
+
+在index.ts增加通知code
+
+在stores底下建立一個新的Notification.ts
+
+在components底下加UserNotification.vue
+
+在view 底下新增Notification.vue
+
+在App.vue加上鈴鐺通知
+
+
+purchase_manager
+123456

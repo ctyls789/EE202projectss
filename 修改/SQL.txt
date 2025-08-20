@@ -1,0 +1,17 @@
+--建立通知資料表
+CREATE TABLE notifications (
+  id            INT IDENTITY(1,1) PRIMARY KEY,
+  user_id       INT        NOT NULL,               -- 對應 employee_users.employee_user_id
+  type          NVARCHAR(50)  NOT NULL,               -- 例：LOW_STOCK
+  title         NVARCHAR(120) NOT NULL,               -- 例：庫存不足提醒
+  message       NVARCHAR(255) NOT NULL,               -- 例：鐵：現有 7 < 安全庫存 50
+  link          NVARCHAR(255) NULL,                   -- 例：/zt/AddOrder?materialId=7
+  is_read       BIT           NOT NULL DEFAULT 0,
+  created_at    DATETIME2     NOT NULL DEFAULT SYSDATETIME()
+);
+
+-- 防止同一條「未讀的」低庫存訊息不斷重複寫入
+CREATE UNIQUE INDEX UX_notifications_dedupe
+  ON notifications(user_id, type, message)
+  WHERE is_read = 0;
+--user_id 用 BIGINT 是為了和 EmployeeUser.employeeUserId: Long 對齊。
